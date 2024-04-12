@@ -18,6 +18,6 @@ if (data) {
 thumbnailList.addEventListener('click', (evt) => {
   const currentThumbnail = evt.target.closest('.picture');
   if (currentThumbnail) {
-    openBigPicture(currentThumbnail.dataset.pictureId);
+    openBigPicture(data, currentThumbnail.dataset.pictureId);
   }
 });

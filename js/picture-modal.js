@@ -1,4 +1,3 @@
-import { data } from './data.js';
 import { clearComments, renderComments } from './render-comments.js';
 
 const pictureModal = document.querySelector('.big-picture');
@@ -9,7 +8,7 @@ const closeButton = pictureModal.querySelector('.big-picture__cancel');
 const totalComments = pictureModal.querySelector('.social__comment-total-count');
 
 // Отображает модальное окно
-const openBigPicture = (pictureId) => {
+const openBigPicture = (data, pictureId) => {
   // Получение обьекта выбранной миниатюры с массива
   const currentThumbnail = data.find((num) => num.id === Number(pictureId));
 

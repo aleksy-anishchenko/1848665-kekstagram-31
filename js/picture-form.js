@@ -1,4 +1,5 @@
 import { isEscapeKey } from './util.js';
+import { showFormError, showFormSuccess } from './alert-manager.js';
 import { effectSlider, renderEffect } from './effects-slider.js';
 import { sendData } from './api.js';
 
@@ -39,56 +40,50 @@ const hashtagRegex = /^#[a-zа-яё0-9]{1,19}$/i;
 // Функция для проверки фокуса на полях формы
 const isFieldFocused = () => document.activeElement === hashtagInput || document.activeElement === descriptionInput;
 
-// Функция показа сообщения об ошибке отправки формы
-const sendErrorAlert = () => {
-  const templateSendErrorAlert = document.querySelector('#error').content.querySelector('.error');
-  const newAlert = templateSendErrorAlert.cloneNode(true);
-  document.body.appendChild(newAlert);
-  const buttonAlert = document.body.querySelector('.error__button');
-  const containerAlert = document.body.querySelector('.error__inner');
-  buttonAlert.addEventListener('click', () => {
-    newAlert.remove();
-  });
-
-  document.removeEventListener('keydown', onDocumentKeydown);
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape' && (evt.target !== newAlert)) {
-      newAlert.remove();
-      document.addEventListener('keydown', onDocumentKeydown);
-    }
-  });
-
-  document.addEventListener('click', (evt) => {
-    if (evt.target !== containerAlert) {
-      newAlert.remove();
-    }
-  });
+const displayFormAlertError = () => {
+  showFormError();
+  const formErrorAlert = document.body.lastElementChild;
+  const buttonAlert = formErrorAlert.querySelector('.error__button');
+  const containerAlert = formErrorAlert.querySelector('.error__inner');
+  if (formErrorAlert) {
+    buttonAlert.addEventListener('click', () => {
+      formErrorAlert.remove();
+    });
+    document.removeEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape' && (evt.target !== formErrorAlert)) {
+        formErrorAlert.remove();
+        document.addEventListener('keydown', onDocumentKeydown);
+      }
+    });
+    document.addEventListener('click', (evt) => {
+      if (evt.target !== containerAlert) {
+        formErrorAlert.remove();
+      }
+    });
+  }
 };
 
-// Функция показа сообщения о успешной отправке формы
-const sendAlert = () => {
-  const templateSendAlert = document.querySelector('#success').content.querySelector('.success');
-  const newAlert = templateSendAlert.cloneNode(true);
-  document.body.appendChild(newAlert);
-  const buttonAlert = document.body.querySelector('.success__button');
-  const containerAlert = document.body.querySelector('.success__inner');
-  buttonAlert.addEventListener('click', () => {
-    newAlert.remove();
-  });
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape' && (evt.target !== newAlert)) {
-      newAlert.remove();
-
-    }
-  });
-
-  document.addEventListener('click', (evt) => {
-    if (evt.target !== containerAlert) {
-      newAlert.remove();
-    }
-  });
+const displayFormAlertSuccess = () => {
+  showFormSuccess();
+  const formAlertSuccess = document.body.lastElementChild;
+  const buttonSuccessAlert = formAlertSuccess.querySelector('.success__button');
+  const containerSuccessAlert = formAlertSuccess.querySelector('.success__inner');
+  if (formAlertSuccess && formAlertSuccess.classList.contains('success')) {
+    buttonSuccessAlert.addEventListener('click', () => {
+      formAlertSuccess.remove();
+    });
+    document.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape' && (evt.target !== formAlertSuccess)) {
+        formAlertSuccess.remove();
+      }
+    });
+    document.addEventListener('click', (evt) => {
+      if (evt.target !== containerSuccessAlert) {
+        formAlertSuccess.remove();
+      }
+    });
+  }
 };
 
 // Валидация формы редактирования изображения
@@ -223,9 +218,9 @@ function setPictureFormSubmit(onSuccess) {
       sendData(new FormData(evt.target))
         .then(() => {
           onSuccess();
-          sendAlert();
+          displayFormAlertSuccess();
         })
-        .catch(sendErrorAlert)
+        .catch(displayFormAlertError)
         .finally(unblockSubmitButton);
     }
   });
