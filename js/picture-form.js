@@ -93,7 +93,6 @@ const pristine = new Pristine(formNode, {
   errorTextClass: 'img-upload__field-wrapper--error',
 });
 
-
 // Функция закрытия формы
 const closePictureForm = () => {
   pictureUploadForm.classList.add('hidden');
@@ -134,8 +133,7 @@ const openPictureForm = () => {
   });
 };
 
-// Обработчик открытия формы полного изображения
-pictureUploadInput.addEventListener('change', () => {
+const uploadPicture = () => {
   const file = pictureUploadInput.files[0];
   if (file) {
     uploadedPicture.src = URL.createObjectURL(file);
@@ -145,9 +143,14 @@ pictureUploadInput.addEventListener('change', () => {
     });
     openPictureForm(file);
   }
-});
+};
 
-// Обработчик события нажатия кнопки закрытия формы
+// Обработчик открытия формы редактирования изображения
+const initUploadPicture = () => {
+  pictureUploadInput.addEventListener('change', uploadPicture);
+};
+
+// Обработчик закрытия формы редактирования изображения кнопкой
 pictureFormCancelButton.addEventListener('click', () => {
   closePictureForm();
 });
@@ -196,7 +199,7 @@ pristine.addValidator(hashtagInput, isValidQuantityHashtags, 'Превышено
 pristine.addValidator(hashtagInput, areValidUniqueHashtags, 'Введенные хэштеги повторяются');
 pristine.addValidator(descriptionInput, isValidDescription, 'Максимальная длина введенного комментария 140 символов');
 
-// Функции блокировки кнопок после отправки формы
+// Блокирова кнопки после отправки формы
 const blockSubmitButton = () => {
   submitButton.disabled = true;
   submitButton.textContent = SubmitButtonText.SENDING;
@@ -207,7 +210,7 @@ const unblockSubmitButton = () => {
   submitButton.textContent = SubmitButtonText.IDLE;
 };
 
-// Функция отправки формы
+// Отправка формы
 function setPictureFormSubmit(onSuccess) {
   formNode.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -226,4 +229,4 @@ function setPictureFormSubmit(onSuccess) {
   });
 }
 
-export { openPictureForm, closePictureForm, setPictureFormSubmit };
+export { initUploadPicture };

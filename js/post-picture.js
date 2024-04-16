@@ -8,21 +8,18 @@ const closeButton = pictureModal.querySelector('.big-picture__cancel');
 const totalComments = pictureModal.querySelector('.social__comment-total-count');
 
 // Отображает модальное окно
-const openBigPicture = (data, pictureId) => {
-  // Получение обьекта выбранной миниатюры с массива
-  const currentThumbnail = data.find((num) => num.id === Number(pictureId));
-
+const openBigPicture = (postData) => {
   // Отчистка комментариев
   clearComments();
 
   // Добавление комментариев
-  renderComments(currentThumbnail.comments);
+  renderComments(postData.comments);
 
   // Заполнение данных в модальном окне
-  modalImage.src = currentThumbnail.url;
-  likesCount.textContent = currentThumbnail.likes;
-  pictureDescription.textContent = currentThumbnail.description;
-  totalComments.textContent = currentThumbnail.comments.length;
+  modalImage.src = postData.url;
+  likesCount.textContent = postData.likes;
+  pictureDescription.textContent = postData.description;
+  totalComments.textContent = postData.comments.length;
 
   // Отображение модального окна
   pictureModal.classList.remove('hidden');

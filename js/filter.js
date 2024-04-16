@@ -3,6 +3,9 @@ const filterButtons = document.querySelectorAll('.img-filters__button');
 
 const AMOUNT_RANDOM_ELEMENTS = 10;
 
+// Функция, показывающая фильтры
+const showFilters = () => filtersContainer.classList.remove('img-filters--inactive');
+
 // Функция, возвращающая массив миниатюр без фильтрации
 const getDefaultFilter = (thumbnails) => thumbnails;
 
@@ -42,5 +45,10 @@ const applyFilteredThumbnails = (thumbnails, callback) => {
   });
 };
 
-export { applyFilteredThumbnails };
+const initFilters = (thumbnails, callback) => {
+  showFilters();
+  applyFilteredThumbnails(thumbnails, callback);
+};
+
+export { initFilters };
 

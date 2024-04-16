@@ -1,14 +1,14 @@
+import { getData } from './api.js';
 import { removeElements, debounce } from './util';
+import { showDataError } from './alert-manager.js';
+import { initFilters } from './filter.js';
+import { openBigPicture } from './post-picture.js';
 
-const filtersContainer = document.querySelector('.img-filters');
 const picturesContainer = document.querySelector('.pictures');
 const thumbnailTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 // Задержка для debounce
 const DEBOUNCE_DELAY = 500;
-
-// Функция, показывающая фильтры
-const showFilters = () => filtersContainer.classList.remove('img-filters--inactive');
 
 // Создает элемент миниатюры на основе данных
 const createThumbnailElement = ({ id, url, description, likes, comments }) => {
@@ -34,12 +34,29 @@ const renderThumbnails = (thumbnails) => {
   // Очищаем существующие миниатюры
   removeElements('.picture');
   picturesContainer.appendChild(thumbnailFragment);
-
-  // Показываем фильтры
-  showFilters();
 };
 
 // Создаем debounced версию функции renderThumbnails
 const renderThumbnailsDebounced = debounce(renderThumbnails, DEBOUNCE_DELAY);
 
-export { renderThumbnailsDebounced };
+const initThumbnails = async () => {
+  const data = await getData().catch(showDataError);
+
+  if (data.length) {
+    renderThumbnails(data);
+
+    // Показываем фильтры
+    initFilters(data, renderThumbnailsDebounced);
+
+    // Обработчик нажатия на миниатюру
+    picturesContainer.addEventListener('click', (evt) => {
+      const closestThumbnail = evt.target.closest('.picture');
+      if (closestThumbnail) {
+        const postData = data.find((num) => num.id === Number(closestThumbnail.dataset.pictureId));
+        openBigPicture(postData);
+      }
+    });
+  }
+};
+
+export { initThumbnails };

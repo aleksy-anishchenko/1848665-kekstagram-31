@@ -24,4 +24,8 @@ const showFormSuccess = () => {
   document.body.appendChild(newAlert);
 };
 
-export { showDataError, showFormError, showFormSuccess };
+export {
+  showDataError,
+  showFormError,
+  showFormSuccess
+};
